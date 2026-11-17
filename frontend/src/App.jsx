@@ -1,5 +1,6 @@
-
 import { BrowserRouter, Route, Routes } from 'react-router'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import { Home } from './pages/Home'
 import Login from './pages/Login'
 import { Register } from './pages/Register'
@@ -16,37 +17,31 @@ import Chat from './pages/Chat'
 import Reset from './pages/Reset'
 import Panel from './pages/Panel'
 
-
-
 function App() {
   return (
     <>
-    <BrowserRouter>
-      <Routes>
-        
-        <Route index element={<Home/>}/>
-        <Route path='login' element={<Login/>}/>
-        <Route path='register' element={<Register/>}/>
-        <Route path='forgot/:id' element={<Forgot/>}/>
-        <Route path='confirm/:token' element={<Confirm/>}/>
-        <Route path='reset/:token' element={<Reset/>}/>
-        <Route path='*' element={<NotFound />} />
+      <ToastContainer />
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<Home />} />
+          <Route path='login' element={<Login />} />
+          <Route path='register' element={<Register />} />
+          <Route path='forgot/:id' element={<Forgot />} />
+          <Route path='confirm/:token' element={<Confirm />} />
+          <Route path='reset/:token' element={<Reset />} />
+          <Route path='*' element={<NotFound />} />
 
-
-        <Route path='/dashboard' element={<Dashboard/>}>
-          <Route index element={<Panel/>}/>
-          <Route path='profile' element={<Profile/>}/>
-          <Route path='list' element={<List/>}/>
-          <Route path='details/:id' element={<Details/>}/>
-          <Route path='create' element={<Create/>}/>
-          <Route path='update/:id' element={<Update/>}/>
-          <Route path='chat' element={<Chat/>}/>
-
-        </Route>
-
-
-      </Routes>
-    </BrowserRouter>
+          <Route path='/dashboard' element={<Dashboard />}>
+            <Route index element={<Panel />} />
+            <Route path='profile' element={<Profile />} />
+            <Route path='list' element={<List />} />
+            <Route path='details/:id' element={<Details />} />
+            <Route path='create' element={<Create />} />
+            <Route path='update/:id' element={<Update />} />
+            <Route path='chat' element={<Chat />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
