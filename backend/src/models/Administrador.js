@@ -43,6 +43,16 @@ const administradorSchema = new Schema({
         type: String,
         default: null
     },
+    passwordResetToken: {
+        type: String,
+        default: null,
+        select: false
+    },
+    passwordResetExpires: {
+        type: Date,
+        default: null,
+        select: false
+    },
     confirmEmail: {
         type: Boolean,
         default: false

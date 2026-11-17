@@ -9,6 +9,17 @@ const app = express();
 dotenv.config();
 
 // Middlewares
+app.use((req, res, next) => {
+    const allowedOrigin = process.env.FRONTEND_URL || "http://localhost:5173";
+    if (req.headers.origin === allowedOrigin) {
+        res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+        res.setHeader("Vary", "Origin");
+        res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+        res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    }
+    if (req.method === "OPTIONS") return res.sendStatus(204);
+    next();
+});
 app.use(express.json());
 
 // Variables globales

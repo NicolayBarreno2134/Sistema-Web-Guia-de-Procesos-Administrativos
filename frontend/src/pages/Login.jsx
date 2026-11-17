@@ -1,11 +1,37 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
+import axios from "axios"
 
 
 
 const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
+    const iniciarSesion = async (event) => {
+        event.preventDefault();
+        setError("");
+        setLoading(true);
+        try {
+            const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
+            const { data } = await axios.post(`${apiUrl}/login`, { email, password });
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("administrador", JSON.stringify({
+                _id: data._id, nombre: data.nombre, apellido: data.apellido,
+                email: data.email, rol: data.rol
+            }));
+            navigate("/dashboard");
+        } catch (requestError) {
+            setError(requestError.response?.data?.msg || "No se pudo iniciar sesión");
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <div className="flex flex-col sm:flex-row h-screen">
@@ -24,13 +50,16 @@ const Login = () => {
 
 
                     {/* Formulario */}
-                    <form>
+                    <form onSubmit={iniciarSesion}>
 
                         {/* Campo Correo */}
                         <div className="mb-3">
                             <label className="block text-sm font-semibold mb-1">Correo electrónico</label>
                             <input
                                 type="email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                required
                                 placeholder="Ingresa tu correo"
                                 className="w-full rounded-md border border-gray-300 focus:ring-1 px-2 py-1 text-gray-500"
                             />
@@ -45,6 +74,9 @@ const Login = () => {
                             <div className="relative">
                                 <input
                                     type={showPassword ? "text" : "password"}
+                                    value={password}
+                                    onChange={(event) => setPassword(event.target.value)}
+                                    required
                                     placeholder="************"
                                     className="w-full rounded-md border border-gray-300 px-3 py-2 pr-10"
                                 />
@@ -62,9 +94,10 @@ const Login = () => {
 
 
                         {/* Botón login */}
-                        <Link to="/dashboard" className="block w-full py-2 text-center bg-gray-500 text-white rounded-xl hover:bg-gray-900 duration-300">
-                            Iniciar sesión
-                        </Link>
+                        {error && <p role="alert" className="mb-3 text-sm text-red-600">{error}</p>}
+                        <button type="submit" disabled={loading} className="block w-full py-2 text-center bg-gray-500 text-white rounded-xl hover:bg-gray-900 duration-300 disabled:opacity-60">
+                            {loading ? "Ingresando..." : "Iniciar sesión"}
+                        </button>
 
                     </form>
 
