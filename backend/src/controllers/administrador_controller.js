@@ -203,11 +203,75 @@ const restablecerPassword = async (req, res) => {
     }
 };
 
+// 7. Consultar el perfil autenticado
+const visualizarPerfil = async (req, res) => {
+    try {
+        const administrador = await Administrador.findById(req.usuario.sub)
+            .select("nombre apellido direccion celular email rol");
+        if (!administrador) return res.status(404).json({ msg: "No se encontró el perfil" });
+        return res.status(200).json(administrador);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Error al consultar el perfil" });
+    }
+};
+
+// 8. Actualizar campos permitidos del perfil
+const actualizarPerfil = async (req, res) => {
+    try {
+        const campos = ["nombre", "apellido", "direccion", "celular", "email"];
+        const cambios = {};
+        for (const campo of campos) {
+            if (Object.hasOwn(req.body, campo)) {
+                cambios[campo] = typeof req.body[campo] === "string" ? req.body[campo].trim() : req.body[campo];
+            }
+        }
+        if (!cambios.nombre || !cambios.apellido || !cambios.email) {
+            return res.status(400).json({ msg: "Nombre, apellido y correo son obligatorios" });
+        }
+        const otroAdministrador = await Administrador.findOne({ email: cambios.email, _id: { $ne: req.usuario.sub } });
+        if (otroAdministrador) return res.status(409).json({ msg: "El correo ya está registrado" });
+
+        const administrador = await Administrador.findByIdAndUpdate(req.usuario.sub, cambios, {
+            new: true, runValidators: true
+        }).select("nombre apellido direccion celular email rol");
+        if (!administrador) return res.status(404).json({ msg: "No se encontró el perfil" });
+        return res.status(200).json({ msg: "Perfil actualizado correctamente", administrador });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Error al actualizar el perfil" });
+    }
+};
+
+// 9. Cambiar contraseña verificando primero la actual
+const actualizarPassword = async (req, res) => {
+    try {
+        const { passwordActual, passwordNueva } = req.body;
+        if (typeof passwordActual !== "string" || typeof passwordNueva !== "string" || passwordNueva.length < 8) {
+            return res.status(400).json({ msg: "Ingresa tu contraseña actual y una nueva de al menos 8 caracteres" });
+        }
+        const administrador = await Administrador.findById(req.usuario.sub);
+        if (!administrador) return res.status(404).json({ msg: "No se encontró la cuenta" });
+        if (!(await administrador.matchPassword(passwordActual))) {
+            return res.status(401).json({ msg: "La contraseña actual no es correcta" });
+        }
+        administrador.password = await administrador.encryptPassword(passwordNueva);
+        await administrador.save();
+        return res.status(200).json({ msg: "Contraseña actualizada correctamente" });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ msg: "Error al actualizar la contraseña" });
+    }
+};
+
 export {
     registro,
     confirmarMail,
     login,
     solicitarRecuperacion,
     comprobarTokenRecuperacion,
-    restablecerPassword
+    restablecerPassword,
+    visualizarPerfil,
+    actualizarPerfil,
+    actualizarPassword
 };

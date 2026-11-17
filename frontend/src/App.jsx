@@ -16,6 +16,7 @@ import Update from './pages/Update'
 import Chat from './pages/Chat'
 import Reset from './pages/Reset'
 import Panel from './pages/Panel'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path='reset/:token' element={<Reset />} />
           <Route path='*' element={<NotFound />} />
 
+          <Route element={<ProtectedRoute />}>
           <Route path='/dashboard' element={<Dashboard />}>
             <Route index element={<Panel />} />
             <Route path='profile' element={<Profile />} />
@@ -39,6 +41,7 @@ function App() {
             <Route path='create' element={<Create />} />
             <Route path='update/:id' element={<Update />} />
             <Route path='chat' element={<Chat />} />
+          </Route>
           </Route>
         </Routes>
       </BrowserRouter>

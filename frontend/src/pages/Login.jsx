@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { MdVisibility, MdVisibilityOff } from "react-icons/md"
-import { Link, useNavigate } from "react-router"
+import { Link, useNavigate, useLocation } from "react-router"
 import axios from "axios"
 
 
@@ -12,6 +12,7 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
     const iniciarSesion = async (event) => {
         event.preventDefault();
@@ -25,7 +26,7 @@ const Login = () => {
                 _id: data._id, nombre: data.nombre, apellido: data.apellido,
                 email: data.email, rol: data.rol
             }));
-            navigate("/dashboard");
+            navigate(location.state?.from?.pathname || "/dashboard", { replace: true });
         } catch (requestError) {
             setError(requestError.response?.data?.msg || "No se pudo iniciar sesión");
         } finally {

@@ -1,10 +1,38 @@
 
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 import CardPassword from '../components/profile/CardPassword'
 import { CardProfile } from '../components/profile/CardProfile'
 import FormProfile from '../components/profile/FormProfile'
 
 
 const Profile = () => {
+    const [administrador, setAdministrador] = useState(() => {
+        try { return JSON.parse(localStorage.getItem('administrador') || '{}') } catch { return {} }
+    })
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+    const headers = { Authorization: `Bearer ${localStorage.getItem('token')}` }
+
+    useEffect(() => {
+        axios.get(`${apiUrl}/perfil`, { headers })
+            .then(({ data }) => {
+                setAdministrador(data)
+                localStorage.setItem('administrador', JSON.stringify(data))
+            })
+            .catch((error) => toast.error(error.response?.data?.msg || 'No se pudo cargar el perfil'))
+    }, [])
+
+    const guardarPerfil = async (datos) => {
+        try {
+            const { data } = await axios.put(`${apiUrl}/perfil`, datos, { headers })
+            setAdministrador(data.administrador)
+            localStorage.setItem('administrador', JSON.stringify(data.administrador))
+            toast.success(data.msg)
+        } catch (error) {
+            toast.error(error.response?.data?.msg || 'No se pudo actualizar el perfil')
+        }
+    }
 
     const fecha = new Date().toLocaleDateString("es-ES", { weekday: "long", day: "numeric", month: "long", year: "numeric" })
     
@@ -33,14 +61,14 @@ const Profile = () => {
                 
                 {/* Fomrulario perfil */}
                 <div className='w-full md:w-1/2'>
-                    <FormProfile />
+                    <FormProfile key={administrador.email || 'perfil'} administrador={administrador} onSave={guardarPerfil} />
                 </div>
 
 
                 <div className='w-full md:w-1/2'>
 
                 {/* Card para mostrar el perfil y formulario para cambiar la contraseña */}
-                    <CardProfile />
+                    <CardProfile administrador={administrador} />
                     <CardPassword />
                 
                 </div>

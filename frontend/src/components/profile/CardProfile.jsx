@@ -1,5 +1,5 @@
 
-export const CardProfile = () => {
+export const CardProfile = ({ administrador = {} }) => {
 
 
     
@@ -24,30 +24,30 @@ export const CardProfile = () => {
 
             {/* Nombre del usuario */}
             <div className="self-start">
-                <b>Nombre:</b><p className="inline-block ml-3"></p>
+                <b>Nombre:</b><p className="inline-block ml-3">{administrador.nombre || '—'}</p>
             </div>
 
 
             {/* Apellido del usuario */}
             <div className="self-start">
-                <b>Apellido:</b><p className="inline-block ml-3"></p>
+                <b>Apellido:</b><p className="inline-block ml-3">{administrador.apellido || '—'}</p>
             </div >
 
 
             {/* Dirección del usuario */}
             <div className="self-start">
-                <b>Dirección:</b><p className="inline-block ml-3"></p>
+                <b>Dirección:</b><p className="inline-block ml-3">{administrador.direccion || '—'}</p>
             </div>
 
 
             {/* Teléfono del usuario */}
             <div className="self-start">
-                <b>Teléfono:</b><p className="inline-block ml-3"></p>
+                <b>Teléfono:</b><p className="inline-block ml-3">{administrador.celular || '—'}</p>
             </div>
 
             {/* Correo del usuario */}
             <div className="self-start">
-                <b>Correo:</b><p className="inline-block ml-3"></p>
+                <b>Correo:</b><p className="inline-block ml-3">{administrador.email || '—'}</p>
             </div>
         </div>
     )

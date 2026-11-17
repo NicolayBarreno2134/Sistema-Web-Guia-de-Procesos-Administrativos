@@ -1,9 +1,17 @@
-import { Link, Outlet, useLocation } from 'react-router'
+import { Link, Outlet, useLocation, useNavigate } from 'react-router'
 
 
 const Dashboard = () => {
     const location = useLocation()
     const urlActual = location.pathname
+    const navigate = useNavigate()
+    let administrador = {}
+    try { administrador = JSON.parse(localStorage.getItem('administrador') || '{}') } catch { /* sesión sin datos de perfil */ }
+    const cerrarSesion = () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('administrador')
+        navigate('/login', { replace: true })
+    }
 
 
     return (
@@ -22,11 +30,11 @@ const Dashboard = () => {
 
                 {/* Nombre de usuario */}
                 <p className='text-slate-400 text-center my-4 text-sm'> <span className='bg-green-600 w-3 h-3 
-                    inline-block rounded-full'></span> Bienvenido - </p>
+                    inline-block rounded-full'></span> Bienvenido - {administrador.nombre || ''}</p>
                 
 
                 {/* Rol de usuario */}
-                <p className='text-slate-400 text-center my-4 text-sm'> Rol - </p>
+                <p className='text-slate-400 text-center my-4 text-sm'> Rol - {administrador.rol || 'administrador'} </p>
                 
                 
                 <hr className="mt-5 border-slate-500" />
@@ -81,7 +89,7 @@ const Dashboard = () => {
                 
                     {/* Nombre de usuario */}
                     <div className='text-md font-semibold text-slate-100'>
-                        Usuario - 
+                        {administrador.nombre || 'Usuario'} {administrador.apellido || ''}
                     </div>
                 
                 
@@ -92,8 +100,8 @@ const Dashboard = () => {
 
                     {/* Botón salir */}
                     <div>
-                        <Link to='/' className=" text-white mr-3 text-md block hover:bg-red-900 text-center
-                        bg-red-800 px-4 py-1 rounded-lg">Salir</Link>
+                        <button type='button' onClick={cerrarSesion} className=" text-white mr-3 text-md block hover:bg-red-900 text-center
+                        bg-red-800 px-4 py-1 rounded-lg">Salir</button>
                     </div>
                 
                 </div>
