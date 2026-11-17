@@ -1,37 +1,24 @@
-//Requerir modulos
 import express from "express";
 import dotenv from "dotenv";
-import routerVeterinarios from "./routers/veterinario_routes.js";
+import routerAdministradores from "./routers/administrador_routes.js";
 
+// Inicializaciones
+const app = express();
 
-//Inicializaciones
-const app =express();
-
-
-//Configuraciones
+// Configuraciones
 dotenv.config();
 
+// Middlewares
+app.use(express.json());
 
+// Variables globales
+app.set("port", process.env.PORT || 3000);
 
-//Middlewares
+// Rutas
+app.get("/", (req, res) => res.send({ message: "Bienvenido a la API de Smart - Sistema Guía Administrativo" }));
+app.use("/api", routerAdministradores);
 
+// Manejo de rutas no encontradas
+app.use((req, res) => res.status(404).json({ msg: "Endpoint no encontrado - 404" }));
 
-
-
-
-
-
-
-//Variables globales
-console.log(process.env.PORT)
-app.set("port",process.env.PORT || 3000)
-
-
-//Rutas
-app.get("/",(req,res)=>res.send({"message": "Bienvenido a la API de Veterinaria"}))
-
-app.use("/api",routerVeterinarios)
-
-// Exportar la instrancia de express por medio de app
-
-export default app
+export default app;
