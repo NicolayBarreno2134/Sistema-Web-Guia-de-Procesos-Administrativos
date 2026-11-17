@@ -1,24 +1,19 @@
-# Autenticación del backend
+# Backend — EPN Guías
 
-## Configuración local
+API Express para los pasos, requisitos y documentos asociados a cada proceso administrativo.
 
-1. Copia `.env.example` como `.env` dentro de `backend`.
-2. Configura `MONGODB_URI_LOCAL` y reemplaza `JWT_SECRET` por una clave aleatoria larga.
-3. Completa las variables SMTP con una cuenta autorizada para enviar correo. El enlace de recuperación apunta a `FRONTEND_URL` y vence en 15 minutos.
-4. Desde esta carpeta ejecuta `npm install` y luego `npm run dev`.
-5. En `frontend`, configura `VITE_API_URL=http://localhost:3000/api` (puedes copiar `frontend/.env.example`) y ejecuta `npm install` y `npm run dev`.
+## Inicio local
 
-No subas los archivos `.env` ni claves SMTP/JWT al repositorio.
+1. Ejecuta `npm install`.
+2. Copia `.env.example` a `.env` y configura `MONGODB_URI`.
+3. Ejecuta `npm run dev`.
 
-## Rutas de autenticación
+El servidor inicia en `http://localhost:3000`. Las rutas de pasos están bajo `/api/pasos`.
 
-Todas las rutas están bajo `/api`:
+## API de pasos
 
-| Método | Ruta | Uso |
-| --- | --- | --- |
-| `POST` | `/login` | Valida credenciales y devuelve un JWT tipo Bearer. |
-| `POST` | `/recuperar-password` | Recibe `{ "email": "..." }` y envía un enlace de recuperación. |
-| `GET` | `/verificar-token-recuperacion/:token` | Comprueba que el token exista y no haya vencido. |
-| `POST` | `/restablecer-password/:token` | Recibe `{ "password": "..." }`, guarda el hash bcrypt y consume el token. |
+- `POST /api/pasos`: crea un paso. Campos: `procesoId`, `titulo`, `descripcion`, `orden`; acepta también `requisitos`, `documentos`, `tiempoEstimado` y `dependencias`.
+- `GET /api/pasos/proceso/:procesoId`: lista los pasos ordenados y sus requisitos/documentos.
+- `PUT /api/pasos/:id`: actualiza los campos enviados del paso.
 
-Los tokens de recuperación se guardan como hash SHA-256 y solo pueden usarse una vez. Las contraseñas nuevas requieren al menos 8 caracteres.
+`dependencias` es una lista de IDs de otros pasos. `requisitos` es una lista de `{ titulo, descripcion, documentoUrl }`; `documentos` es una lista de `{ nombre, url }`.
