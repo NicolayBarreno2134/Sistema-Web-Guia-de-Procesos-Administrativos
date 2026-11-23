@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { registro, confirmEmail } from "../controllers/administradorController.js";
+import { registro, confirmEmail } from "../controllers/administrador_controller.js";
 
 const router = Router();
 

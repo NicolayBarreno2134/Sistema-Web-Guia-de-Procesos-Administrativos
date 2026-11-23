@@ -1,10 +1,8 @@
-import "dotenv/config";
-import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import pasosRoutes from "./routes/pasosRoutes.js";
-import administradorRoutes from "./routes/administradorRoutes.js";
+import administradorRoutes from "./routes/administrador_routes.js";
 
 dotenv.config();
 const app = express();
