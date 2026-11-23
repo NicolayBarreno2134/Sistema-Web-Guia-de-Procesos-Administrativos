@@ -1,7 +1,11 @@
-# Smartvet - Template
+# Frontend — EPN Guías
 
-<img width="1920" height="2067" alt="image" src="https://github.com/user-attachments/assets/08a34d44-5f90-4107-8807-e3a7c3a3dc92" />
+Aplicación React creada con Vite, Tailwind CSS y React Router DOM.
 
+## Inicio local
 
-<img width="1920" height="1105" alt="image" src="https://github.com/user-attachments/assets/047dab4f-c295-47aa-8127-2488318b75ee" />
+1. Ejecuta `npm install`.
+2. Copia `.env.example` a `.env` si la API no está en `http://localhost:3000/api`.
+3. Ejecuta `npm run dev`.
 
+La página inicial acepta el ID del proceso y abre `/procesos/:procesoId/pasos`. El visualizador consulta la API, ordena los pasos que recibe, presenta tiempos, dependencias, requisitos y enlaces a documentos. El avance que marca el estudiante se guarda en su navegador.
