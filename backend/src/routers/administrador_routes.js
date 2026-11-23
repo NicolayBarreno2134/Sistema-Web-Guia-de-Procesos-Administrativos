@@ -1,14 +1,9 @@
-import { Router } from 'express';
-import {
-    registro,
-    confirmarMail,
-    login
-} from '../controllers/administrador_controller.js';
+import { Router } from "express";
+import { registro, confirmEmail } from "../controllers/administradorController.js";
 
 const router = Router();
 
-router.post('/registro', registro);
-router.get('/confirmar/:token', confirmarMail);
-router.post('/login', login);
+router.post("/registro", registro);
+router.get("/confirmar/:token", confirmEmail);
 
 export default router;

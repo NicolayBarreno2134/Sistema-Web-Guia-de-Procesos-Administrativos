@@ -1,26 +1,20 @@
 import express from "express";
 import dotenv from "dotenv";
-import routerAdministradores from "./routers/administrador_routes.js";
+import cors from "cors";
+import pasosRoutes from "./routes/pasosRoutes.js";
+import administradorRoutes from "./routes/administradorRoutes.js";
 
-const app = express();
 dotenv.config();
+const app = express();
 
-// Middlewares
+app.use(cors());
 app.use(express.json());
-
-// Permitir peticiones desde el frontend (CORS)
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-    if (req.method === "OPTIONS") return res.sendStatus(200);
-    next();
-});
 
 app.set("port", process.env.PORT || 3000);
 
-app.get("/", (req, res) => res.send({ message: "Bienvenido a la API de Smart - Sistema Guía Administrativo" }));
-app.use("/api", routerAdministradores);
+app.get("/", (req, res) => res.send("API Smart - Sistema Guía Administrativo"));
+app.use("/api/pasos", pasosRoutes);
+app.use("/api", administradorRoutes);
 
 app.use((req, res) => res.status(404).json({ msg: "Endpoint no encontrado - 404" }));
 

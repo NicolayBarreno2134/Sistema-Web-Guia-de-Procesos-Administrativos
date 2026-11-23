@@ -1,76 +1,31 @@
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import { randomBytes } from 'node:crypto';
-
-const { Schema, model } = mongoose;
+import { Schema, model } from "mongoose";
+import bcrypt from "bcryptjs";
 
 const administradorSchema = new Schema({
-    nombre: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    apellido: {
-        type: String,
-        required: true,
-        trim: true
-    },
-    direccion: {
-        type: String,
-        trim: true,
-        default: null
-    },
-    celular: {
-        type: String,
-        trim: true,
-        default: null
-    },
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        unique: true
-    },
-    password: {
-        type: String,
-        required: true
-    },
-    status: {
-        type: Boolean,
-        default: true
-    },
-    token: {
-        type: String,
-        default: null
-    },
-    confirmEmail: {
-        type: Boolean,
-        default: false
-    },
-    rol: {
-        type: String,
-        default: "administrador"
-    }
+    nombre: { type: String, required: true, trim: true },
+    apellido: { type: String, required: true, trim: true },
+    direccion: { type: String, trim: true, default: null },
+    celular: { type: String, trim: true, default: null },
+    email: { type: String, required: true, trim: true, unique: true },
+    password: { type: String, required: true },
+    status: { type: Boolean, default: true },
+    token: { type: String, default: null },
+    confirmEmail: { type: Boolean, default: false }
 }, {
     timestamps: true
 });
 
-// Método para cifrar el password
-administradorSchema.methods.encryptPassword = async function(passwordUser) {
+administradorSchema.methods.encryptPassword = async function (password) {
     const salt = await bcrypt.genSalt(10);
-    const passwordEncryp = await bcrypt.hash(passwordUser, salt);
-    return passwordEncryp;
+    return await bcrypt.hash(password, salt);
 };
 
-// Método para verificar el password
-administradorSchema.methods.matchPassword = async function(passwordUser) {
-    const response = await bcrypt.compare(passwordUser, this.password);
-    return response;
+administradorSchema.methods.matchPassword = async function (password) {
+    return await bcrypt.compare(password, this.password);
 };
 
-// Método para crear un token (OTP) de verificación
-administradorSchema.methods.createToken = function() {
-    const tokenGenerado = randomBytes(2).toString('hex').toUpperCase();
+administradorSchema.methods.createToken = function () {
+    const tokenGenerado = Math.random().toString(36).slice(2);
     this.token = tokenGenerado;
     return tokenGenerado;
 };
