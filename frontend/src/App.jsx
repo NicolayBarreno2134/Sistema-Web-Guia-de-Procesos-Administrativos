@@ -5,6 +5,7 @@ import Inicio from "./pages/Inicio";
 import VisualizadorPasos from "./pages/VisualizadorPasos";
 import { Register } from "./pages/Register";
 import { Confirm } from "./pages/Confirm";
+import { Login } from "./pages/Login";
 
 function App() {
     return (
@@ -15,6 +16,7 @@ function App() {
                     <Route path="/" element={<Inicio />} />
                     <Route path="/pasos" element={<VisualizadorPasos />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<Login />} />
                     <Route path="/confirm/:token" element={<Confirm />} />
                 </Routes>
             </BrowserRouter>
