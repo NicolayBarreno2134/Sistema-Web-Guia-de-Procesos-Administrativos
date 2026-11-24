@@ -9,7 +9,7 @@ export const Confirm = () => {
 
     useEffect(() => {
         const verifyToken = async () => {
-            const url = `${import.meta.env.VITE_BACKEND_URL}/confirmar/${token}`;
+            const url = `${import.meta.env.VITE_API_URL}/confirmar/${token}`;
             const respuesta = await fetchDataBackend(url, null, "GET");
             if (respuesta) {
                 setConfirmado(true);

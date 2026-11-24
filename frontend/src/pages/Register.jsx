@@ -22,7 +22,7 @@ export const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = `${import.meta.env.VITE_BACKEND_URL}/registro`;
+        const url = `${import.meta.env.VITE_API_URL}/registro`;
         const respuesta = await fetchDataBackend(url, form, "POST");
         if (respuesta) {
             setForm({
