@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFetch } from "../hooks/useFetch";
 import { guardarSesion } from "../services/storeAuth";
 
@@ -8,6 +8,7 @@ export const Login = () => {
     const [showPassword, setShowPassword] = useState(false);
     const { fetchDataBackend, loading } = useFetch();
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [form, setForm] = useState({
         email: "",
@@ -20,11 +21,10 @@ export const Login = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = `${import.meta.env.VITE_API_URL}/login`;
-        const respuesta = await fetchDataBackend(url, form, "POST");
+        const respuesta = await fetchDataBackend("/login", form, "POST");
         if (respuesta?.token) {
             guardarSesion(respuesta.token, respuesta.admin);
-            navigate("/pasos");
+            navigate(location.state?.from || "/dashboard", { replace: true });
         }
     };
 

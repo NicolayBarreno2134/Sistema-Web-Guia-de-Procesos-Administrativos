@@ -8,8 +8,9 @@ import loginRoutes from "./routes/login_routes.js";
 dotenv.config();
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: process.env.FRONTEND_URL || "http://localhost:5173" }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.set("port", process.env.PORT || 3000);
 

@@ -6,6 +6,7 @@ import { useFetch } from "../hooks/useFetch";
 export const Register = () => {
     const [showPassword, setShowPassword] = useState(false);
     const { fetchDataBackend, loading } = useFetch();
+    const [confirmationToken, setConfirmationToken] = useState("");
 
     const [form, setForm] = useState({
         nombre: "",
@@ -22,9 +23,9 @@ export const Register = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const url = `${import.meta.env.VITE_API_URL}/registro`;
-        const respuesta = await fetchDataBackend(url, form, "POST");
+        const respuesta = await fetchDataBackend("/registro", form, "POST");
         if (respuesta) {
+            setConfirmationToken(respuesta.token || "");
             setForm({
                 nombre: "",
                 apellido: "",
@@ -70,7 +71,7 @@ export const Register = () => {
                     <div>
                         <label className="block text-sm font-semibold mb-1">Contraseña</label>
                         <div className="relative">
-                            <input type={showPassword ? "text" : "password"} name="password" value={form.password} onChange={handleChange} placeholder="************" className="w-full rounded-md border border-gray-300 px-3 py-1.5 pr-10 text-gray-700" required />
+                            <input type={showPassword ? "text" : "password"} name="password" value={form.password} onChange={handleChange} placeholder="************" minLength={8} className="w-full rounded-md border border-gray-300 px-3 py-1.5 pr-10 text-gray-700" required />
                             <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-3 flex items-center text-gray-500">
                                 {showPassword ? <MdVisibilityOff size={20} /> : <MdVisibility size={20} />}
                             </button>
@@ -81,6 +82,9 @@ export const Register = () => {
                         {loading ? "Registrando..." : "Registrarse"}
                     </button>
                 </form>
+                {confirmationToken && <p role="status" className="mt-4 text-center text-sm text-emerald-800">
+                    Abre <Link className="font-semibold underline" to={`/confirm/${confirmationToken}`}>este enlace para confirmar tu cuenta</Link>.
+                </p>}
 
                 <div className="mt-4 text-sm flex justify-between items-center">
                     <p className="text-gray-600">¿Ya posees una cuenta?</p>

@@ -1,6 +1,6 @@
-import axios from "axios";
 import { useState } from "react";
 import { toast } from "react-toastify";
+import api from "../services/api";
 
 export function useFetch() {
     const [loading, setLoading] = useState(false);
@@ -9,9 +9,9 @@ export function useFetch() {
         const loadingToast = toast.loading("Procesando solicitud...");
         setLoading(true);
         try {
-            const response = await axios({
+            const response = await api({
                 method,
-                url,
+                url: url.startsWith(api.defaults.baseURL) ? url.slice(api.defaults.baseURL.length) : url,
                 headers: {
                     "Content-Type": "application/json",
                     ...headers,

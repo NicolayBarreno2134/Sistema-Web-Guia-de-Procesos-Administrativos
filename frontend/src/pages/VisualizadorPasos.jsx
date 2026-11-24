@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
+import PropTypes from "prop-types";
 import api from "../services/api";
 import BrandHeader from "../components/BrandHeader";
 
@@ -8,7 +9,7 @@ const leerProgreso = (procesoId) => {
     catch { return {}; }
 };
 
-const VisualizadorPasos = () => {
+const VisualizadorPasos = ({ inDashboard = false }) => {
     const { procesoId } = useParams();
     const [pasos, setPasos] = useState([]);
     const [progreso, setProgreso] = useState(() => leerProgreso(procesoId));
@@ -56,7 +57,7 @@ const VisualizadorPasos = () => {
 
     return (
         <main className="min-h-screen bg-slate-50 text-slate-800">
-            <BrandHeader />
+            {!inDashboard && <BrandHeader />}
 
             <div className="mx-auto max-w-5xl px-5 py-10 md:py-14">
                 <p className="text-sm font-semibold uppercase tracking-wider text-emerald-700">Ruta del trámite</p>
@@ -126,3 +127,5 @@ const VisualizadorPasos = () => {
 };
 
 export default VisualizadorPasos;
+
+VisualizadorPasos.propTypes = { inDashboard: PropTypes.bool };
