@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 import BrandHeader from "../components/BrandHeader";
 
-const Inicio = () => {
+const Inicio = ({ inDashboard = false }) => {
     const [procesoId, setProcesoId] = useState("");
     const navigate = useNavigate();
 
     const abrirProceso = (event) => {
         event.preventDefault();
-        if (procesoId.trim()) navigate(`/procesos/${procesoId.trim()}/pasos`);
+        if (procesoId.trim()) navigate(`/dashboard/procesos/${procesoId.trim()}/pasos`);
     };
 
     return (
         <main className="min-h-screen bg-slate-50 text-slate-800">
-            <BrandHeader />
+            {!inDashboard && <BrandHeader />}
 
             <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 md:grid-cols-2 md:items-center md:py-24">
                 <div>
@@ -40,3 +41,5 @@ const Inicio = () => {
 };
 
 export default Inicio;
+
+Inicio.propTypes = { inDashboard: PropTypes.bool };

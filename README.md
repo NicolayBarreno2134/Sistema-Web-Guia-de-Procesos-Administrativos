@@ -62,6 +62,7 @@ frontend/
    | `FRONTEND_URL` | URL del frontend (por defecto `http://localhost:5173`) |
    | `JWT_SECRET` | Clave secreta para firmar los tokens. Debe ser larga y no compartirse |
    | `JWT_EXPIRES_IN` | Duración de la sesión, por ejemplo `1d` |
+| `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, `SMTP_FROM` | Credenciales reales del servicio de correo para confirmar cuentas y recuperar contraseñas |
 
 3. Ejecuta el servidor:
 
@@ -98,7 +99,7 @@ frontend/
 ### Registro de administradores
 - Registro con nombre, apellido, dirección, celular, correo y contraseña.
 - La contraseña se guarda cifrada con bcrypt.
-- Se genera un token de confirmación que se devuelve en la respuesta (solo para pruebas).
+- Se envía un enlace de confirmación por SMTP; en desarrollo sin SMTP, el backend devuelve un enlace utilizable en la respuesta.
 
 ### Confirmación de cuenta
 - El administrador confirma su cuenta visitando el enlace con el token.
@@ -109,6 +110,15 @@ frontend/
 - Rechaza cuentas no confirmadas y cuentas desactivadas.
 - Devuelve un JWT válido por el tiempo definido en `JWT_EXPIRES_IN`.
 - En el frontend, la sesión se guarda en `localStorage` mediante `storeAuth.jsx`.
+
+### Perfil y rutas privadas
+- El middleware `verificarAutenticacion` valida el JWT y el estado de la cuenta en cada solicitud privada.
+- Perfil y cambio de contraseña están disponibles en el panel del administrador.
+- El módulo de pasos requiere sesión para consultar, crear o actualizar información.
+
+### Recuperación de contraseña
+- La API genera un token de un solo uso con vencimiento de 15 minutos y solo guarda su hash.
+- Para enviar el enlace, configura las variables SMTP del archivo `backend/.env.example`.
 
 ### Visualización de pasos
 - Vista `/pasos` para mostrar los pasos y requisitos de un proceso.
@@ -121,7 +131,15 @@ frontend/
 | POST | `/api/registro` | Registra un administrador |
 | GET | `/api/confirmar/:token` | Confirma la cuenta |
 | POST | `/api/login` | Inicia sesión y devuelve el JWT |
-| GET | `/api/pasos` | Rutas del módulo de pasos |
+| POST | `/api/recuperar-password` | Solicita un enlace de recuperación (requiere SMTP) |
+| GET | `/api/recuperar-password/:token` | Valida el enlace de recuperación |
+| POST | `/api/nuevo-password/:token` | Guarda la nueva contraseña |
+| GET | `/api/perfil` | Devuelve el perfil del administrador autenticado |
+| PUT | `/api/administrador/:id` | Actualiza el perfil propio |
+| PUT | `/api/administrador/actualizarpassword` | Cambia la contraseña autenticado |
+| POST | `/api/pasos` | Crea un paso autenticado |
+| GET | `/api/pasos/proceso/:procesoId` | Lista pasos autenticado |
+| PUT | `/api/pasos/:id` | Actualiza un paso autenticado |
 
 ## Rutas del frontend
 
@@ -131,4 +149,6 @@ frontend/
 | `/login` | Inicio de sesión |
 | `/register` | Registro |
 | `/confirm/:token` | Confirmación de cuenta |
-| `/pasos` | Pasos y requisitos del proceso |
+| `/dashboard` | Inicio del panel privado |
+| `/dashboard/profile` | Perfil y contraseña |
+| `/dashboard/procesos/:procesoId/pasos` | Pasos y requisitos del proceso |

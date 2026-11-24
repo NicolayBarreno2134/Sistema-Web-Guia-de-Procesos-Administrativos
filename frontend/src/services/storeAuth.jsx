@@ -12,7 +12,9 @@ export const obtenerToken = () => {
 
 export const obtenerAdmin = () => {
     const datos = localStorage.getItem(ADMIN_KEY);
-    return datos ? JSON.parse(datos) : null;
+    if (!datos) return null;
+    try { return JSON.parse(datos); }
+    catch { localStorage.removeItem(ADMIN_KEY); return null; }
 };
 
 export const estaAutenticado = () => {
@@ -22,4 +24,8 @@ export const estaAutenticado = () => {
 export const cerrarSesion = () => {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(ADMIN_KEY);
+};
+
+export const actualizarAdminSesion = (admin) => {
+    if (admin) localStorage.setItem(ADMIN_KEY, JSON.stringify(admin));
 };
